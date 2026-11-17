@@ -194,8 +194,8 @@ function buildLatexClassic(d) {
   L.push(`\\setlength{\\tabcolsep}{0in}`);
   L.push(``);
   L.push(`\\titleformat{\\section}{`);
-  L.push(`   \\vspace{-4pt}\\scshape\\raggedright\\large\\bfseries`);
-  L.push(`}{{0em}{}[\\color{black}\\titlerule \\vspace{-5pt}]`);
+  L.push(`  \\vspace{-4pt}\\scshape\\raggedright\\large\\bfseries`);
+  L.push(`}{}{0em}{}[\\color{black}\\titlerule \\vspace{-5pt}]`);
   L.push(``);
   L.push(`\\pdfgentounicode=1`);
   L.push(``);
@@ -260,7 +260,7 @@ function buildLatexClassic(d) {
       const dates = [e.start, e.end].filter(Boolean).join(" -- ");
       L.push(`    \\resumeSubheading`);
       L.push(`      {${pipe(e.org || "University")}}{${pipe(dates)}}`);
-      L.push(`      {${pipe(e.title || "Degree")}{${pipe(e.location)}}`);
+      L.push(`      {${pipe(e.title || "Degree")}}{${pipe(e.location)}}`);
       if (e === edus[0] && d.gpa) L.push(`    \\resumeSubSubheading{GPA: ${pipe(d.gpa)}${d.gradingScale ? ` (${pipe(d.gradingScale)})` : ""}}{}`);
       if (e === edus[edus.length - 1] && d.thesis) L.push(`    \\resumeSubSubheading{Thesis: ${pipe(d.thesis)}}{}`);
     });
@@ -270,11 +270,11 @@ function buildLatexClassic(d) {
       const courses = d.relevantCourses.split(/[,;]/).map(c => c.trim()).filter(Boolean);
       L.push(`\\section{Relevant Coursework}`);
       L.push(`    \\begin{multicols}{4}`);
-      L.push(`         \\begin{itemize}[itemsep=-5pt, parsep=3pt]`);
-      courses.forEach(c => L.push(`               \\item\\small ${pipe(c)}`));
+      L.push(`        \\begin{itemize}[itemsep=-5pt, parsep=3pt]`);
+      courses.forEach(c => L.push(`                \\item\\small ${pipe(c)}`));
       L.push(`        \\end{itemize}`);
       L.push(`    \\end{multicols}`);
-      L.push(`        \\vspaceo{2.0\\multicolsep}`);
+      L.push(`        \\vspace*{2.0\\multicolsep}`);
       L.push(``);
     }
   }
@@ -287,9 +287,9 @@ function buildLatexClassic(d) {
       L.push(``);
       exps.forEach(e => {
         const dates = [e.start, e.end].filter(Boolean).join(" -- ");
-        L.push(`   \\resumeSubheading`);
+        L.push(`    \\resumeSubheading`);
         L.push(`      {${pipe(e.org || "Employer")}}{${pipe(dates)}}`);
-        L.push(`      {${pipe(e.title || "Role")}{${pipe(e.location)}}`);
+        L.push(`      {${pipe(e.title || "Role")}}{${pipe(e.location)}}`);
         const bl = (e.bullets || []).filter(Boolean);
         if (bl.length) {
           L.push(`      \\resumeItemListStart`);
@@ -504,7 +504,7 @@ function App() {
           )}
         </Section>
         {exps.length > 0 && <Section t="Experience">
-          {eyps.map((e, i) => (
+          {exps.map((e, i) => (
             <Entry key={i} left={e.org || "Employer"} right={[e.start, e.end].filter(Boolean).join(" – ")} sub={e.title || "Role"} subRight={e.location} bullets={e.bullets || []} />
           ))}
         </Section>}
