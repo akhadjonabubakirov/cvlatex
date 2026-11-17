@@ -13,7 +13,6 @@
 <body>
 <div id="root"></div>
 <script type="text/babel" data-presets="react">
-
 const { useState, useEffect, useMemo } = React;
 
 // ---------- Types ----------
@@ -503,12 +502,15 @@ function App() {
             </div>
           )}
         </Section>
-        {exps.length > 0 && <Section t="Experience">
-          {exps.map((e, i) => (
-            <Entry key={i} left={e.org || "Employer"} right={[e.start, e.end].filter(Boolean).join(" – ")} sub={e.title || "Role"} subRight={e.location} bullets={e.bullets || []} />
-          ))}
-        </Section>}
-        {projs.length > 0 && <Section t="Projects">
+        {exps.length > 0 && (
+          <Section t="Experience">
+            {exps.map((e, i) => (
+              <Entry key={i} left={e.org || "Employer"} right={[e.start, e.end].filter(Boolean).join(" – ")} sub={e.title || "Role"} subRight={e.location} bullets={e.bullets || []} />
+            ))}
+          </Section>
+        )}
+        {projs.length > 0 && (
+          <Section t="Projects">
           {projs.map((p, i) => (
             <div key={i} className="mb-1.5">
               <div className="flex justify-between text-[13px]">
@@ -518,7 +520,8 @@ function App() {
               {(p.bullets || []).filter(Boolean).map((b, j) => <div key={j} className="text-[12px] ml-3">• {b}</div>)}
             </div>
           ))}
-        </Section>}
+          </Section>
+        )}
         <Section t="Technical Skills">
           <div className="text-[12px]">
             {data.skills.office && <div><b>Office & Reporting:</b> {data.skills.office}</div>}
@@ -528,13 +531,15 @@ function App() {
             {data.languageTests && <div><b>Language Tests:</b> {data.languageTests}</div>}
             {data.standardizedTests && <div><b>Standardized Tests:</b> {data.standardizedTests}</div>}
           </div>
-        </Section>}
-        {extras.length > 0 && <Section t="Leadership / Extracurricular">
+        </Section>
+        {extras.length > 0 && (
+          <Section t="Leadership / Extracurricular">
           <ul className="list-disc ml-5 text-[12px]">{extras.map((x, i) => {
             const m = x.match(/^(.+?):\s*(.+)$/);
             return <li key={i}>{m ? <React.Fragment><b>{m[1]}:</b> {m[2]}</React.Fragment> : x}</li>;
           })}</ul>
-        </Section>}
+        </Section>
+        )}
       </div>
     );
   };
