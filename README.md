@@ -1,20 +1,15 @@
 # LaTeX CV Builder
 
-A questionnaire-style web app that generates a LaTeX CV. Fill in the form, preview the CV live, then either print/save it as PDF directly or copy the generated LaTeX code into Overleaf.
+A questionnaire-driven LaTeX CV builder for master's programme applications.
+Answer the steps, get generated LaTeX code (Academic navy or Classic sb2nov/Jake Gutierrez style),
+a live preview, and a one-click Print / Save as PDF.
 
-**Live site:** https://akhadjonabubakirov.github.io/cvlatex/
+**Live app:** https://akhadjonabubakirov.github.io/cvlatex/
 
-## Features
-- Step-by-step questionnaire (personal details, education, experience, projects, skills, extras)
-- Two templates: Academic (navy, master's application style) and Classic (Jake Gutierrez / sb2nov style)
-- Live visual preview and generated LaTeX source
-- Print / Save as PDF button
-- Data is saved in your browser (localStorage) — nothing leaves your machine
+## Local use
 
-## Usage
-Open the site, fill the form, switch templates at the top, and use **Print / Save as PDF**. For a compiled LaTeX PDF, copy the code from the LaTeX tab into [Overleaf](https://overleaf.com).
+Download `index.html` and open it in any browser — it is fully self-contained.
 
-## Development
-The app is a single self-contained `index.html` (React 18 + Babel standalone + Tailwind via CDN). Open it directly in a browser or serve it with `python -m http.server`.
+## Deploy
 
-Deployment is automatic via GitHub Actions (see `.github/workflows/deploy-pages.yml`).
+GitHub Actions (see `.github/workflows/deploy-pages.yml`) publishes the site on every push to `main`.
