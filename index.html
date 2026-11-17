@@ -13,6 +13,7 @@
 <body>
 <div id="root"></div>
 <script type="text/babel" data-presets="react">
+
 const { useState, useEffect, useMemo } = React;
 
 // ---------- Types ----------
@@ -30,15 +31,17 @@ const initialData = {
   languageTests: "", standardizedTests: "",
   extras: "", gapExplanation: "",
   targetProgram: "", programLanguage: "English", specialRequirements: "",
+  template: "academic",
 };
 
 const STEPS = ["Personal", "Education", "Experience", "Projects", "Skills & Languages", "Extras & Target"];
 
 // ---------- Helpers ----------
-const esc = (s) => (s || "").replace(/\\/g, "\\textbackslash{}").replace(/([&%$#_{}])/g, "\\$1").replace(/~/g, "\\textasciitilde{}").replace(/\^/g, "\\textasciicircum{}");
+const esc = (s) => (s || "").replace(/\\/g, "\\textbackslash{}").replace(/([&%$#_{}])/g, "\\$1").replace(/~/g, "\\textasciitilde{}").replace(/\^/g, "\\textasciicircum{}").replace(/#/g, "\\#");
 const pipe = (s) => esc(s).replace(/\|/g, "\\textbar{}");
 
-function buildLatex(d) {
+// ---------- Template 1: Academic (navy, master's application style) ----------
+function buildLatexAcademic(d) {
   const L = [];
   L.push(`\\documentclass[10pt,a4paper]{article}`);
   L.push(`\\usepackage[T1]{fontenc}`);
@@ -147,6 +150,220 @@ function buildLatex(d) {
   return L.join("\n");
 }
 
+// ---------- Template 2: Classic (Jake Gutierrez / sb2nov style) ----------
+function buildLatexClassic(d) {
+  const L = [];
+  L.push(`% Author : Jake Gutierrez`);
+  L.push(`% Based off of: https://github.com/sb2nov/resume`);
+  L.push(`% License : MIT`);
+  L.push(`\\documentclass[letterpaper,11pt]{article}`);
+  L.push(``);
+  L.push(`\\usepackage{latexsym}`);
+  L.push(`\\usepackage[empty]{fullpage}`);
+  L.push(`\\usepackage{titlesec}`);
+  L.push(`\\usepackage{marvosym}`);
+  L.push(`\\usepackage[usenames,dvipsnames]{color}`);
+  L.push(`\\usepackage{verbatim}`);
+  L.push(`\\usepackage{enumitem}`);
+  L.push(`\\usepackage[hidelinks]{hyperref}`);
+  L.push(`\\usepackage{fancyhdr}`);
+  L.push(`\\usepackage[english]{babel}`);
+  L.push(`\\usepackage{tabularx}`);
+  L.push(`\\usepackage{fontawesome5}`);
+  L.push(`\\usepackage{multicol}`);
+  L.push(`\\setlength{\\multicolsep}{-3.0pt}`);
+  L.push(`\\setlength{\\columnsep}{-1pt}`);
+  L.push(`\\input{glyphtounicode}`);
+  L.push(``);
+  L.push(`\\pagestyle{fancy}`);
+  L.push(`\\fancyhf{}`);
+  L.push(`\\fancyfoot{}`);
+  L.push(`\\renewcommand{\\headrulewidth}{0pt}`);
+  L.push(`\\renewcommand{\\footrulewidth}{0pt}`);
+  L.push(``);
+  L.push(`\\addtolength{\\oddsidemargin}{-0.6in}`);
+  L.push(`\\addtolength{\\evensidemargin}{-0.5in}`);
+  L.push(`\\addtolength{\\textwidth}{1.19in}`);
+  L.push(`\\addtolength{\\topmargin}{-.7in}`);
+  L.push(`\\addtolength{\\textheight}{1.4in}`);
+  L.push(``);
+  L.push(`\\urlstyle{same}`);
+  L.push(``);
+  L.push(`\\raggedbottom`);
+  L.push(`\\raggedright`);
+  L.push(`\\setlength{\\tabcolsep}{0in}`);
+  L.push(``);
+  L.push(`\\titleformat{\\section}{`);
+  L.push(`   \\vspace{-4pt}\\scshape\\raggedright\\large\\bfseries`);
+  L.push(`}{{0em}{}[\\color{black}\\titlerule \\vspace{-5pt}]`);
+  L.push(``);
+  L.push(`\\pdfgentounicode=1`);
+  L.push(``);
+  L.push(`\\newcommand{\\resumeItem}[1]{`);
+  L.push(`  \\item\\small{`);
+  L.push(`    {#1 \\vspace{-2pt}}`);
+  L.push(`  }`);
+  L.push(`}`);
+  L.push(``);
+  L.push(`\\newcommand{\\resumeSubheading}[4]{`);
+  L.push(`  \\vspace{-2pt}\\item`);
+  L.push(`    \\begin{tabular*}{1.0\\textwidth}[t]{l@{\\extracolsep{\\fill}}r}`);
+  L.push(`      \\textbf{#1} & \\textbf{\\small #2} \\\\`);
+  L.push(`      \\textit{\\small#3} & \\textit{\\small #4} \\\\`);
+  L.push(`    \\end{tabular*}\\vspace{-7pt}`);
+  L.push(`}`);
+  L.push(``);
+  L.push(`\\newcommand{\\resumeSubSubheading}[2]{`);
+  L.push(`    \\item`);
+  L.push(`    \\begin{tabular*}{0.97\\textwidth}{l@{\\extracolsep{\\fill}}r}`);
+  L.push(`      \\textit{\\small#1} & \\textit{\\small #2} \\\\`);
+  L.push(`    \\end{tabular*}\\vspace{-7pt}`);
+  L.push(`}`);
+  L.push(``);
+  L.push(`\\newcommand{\\resumeProjectHeading}[2]{`);
+  L.push(`    \\item`);
+  L.push(`    \\begin{tabular*}{1.001\\textwidth}{l@{\\extracolsep{\\fill}}r}`);
+  L.push(`      \\small#1 & \\textbf{\\small #2}\\\\`);
+  L.push(`    \\end{tabular*}\\vspace{-7pt}`);
+  L.push(`}`);
+  L.push(``);
+  L.push(`\\newcommand{\\resumeSubItem}[1]{\\resumeItem{#1}\\vspace{-4pt}}`);
+  L.push(``);
+  L.push(`\\renewcommand\\labelitemi{$\\vcenter{\\hbox{\\tiny$\\bullet$}}$}`);
+  L.push(`\\renewcommand\\labelitemii{$\\vcenter{\\hbox{\\tiny$\\bullet$}}$}`);
+  L.push(``);
+  L.push(`\\newcommand{\\resumeSubHeadingListStart}{\\begin{itemize}[leftmargin=0.0in, label={}]}`);
+  L.push(`\\newcommand{\\resumeSubHeadingListEnd}{\\end{itemize}}`);
+  L.push(`\\newcommand{\\resumeItemListStart}{\\begin{itemize}}`);
+  L.push(`\\newcommand{\\resumeItemListEnd}{\\end{itemize}\\vspace{-5pt}}`);
+  L.push(``);
+  L.push(`\\begin{document}`);
+  L.push(``);
+  L.push(`\\begin{center}`);
+  L.push(`    {\\Huge \\scshape ${pipe(d.fullName || "Your Name")}} \\\\ \\vspace{1pt}`);
+  if (d.city) L.push(`    ${pipe(d.city)} \\\\ \\vspace{1pt}`);
+  const iconBits = [];
+  if (d.phone) iconBits.push(`\\raisebox{-0.1\\height}\\faPhone\\ ${pipe(d.phone)}`);
+  if (d.email) iconBits.push(`\\href{mailto:${pipe(d.email)}}{\\raisebox{-0.2\\height}\\faEnvelope\\  \\underline{${pipe(d.email)}}}`);
+  if (d.linkedin) iconBits.push(`\\href{https://linkedin.com/in/${pipe(d.linkedin)}}{\\raisebox{-0.2\\height}\\faLinkedin\\ \\underline{linkedin.com/in/${pipe(d.linkedin)}}}`);
+  if (d.github) iconBits.push(`\\href{https://github.com/${pipe(d.github)}}{\\raisebox{-0.2\\height}\\faGithub\\ \\underline{github.com/${pipe(d.github)}}}`);
+  if (iconBits.length) L.push(`    \\small ${iconBits.join(" ~ ")}`);
+  L.push(`    \\vspace{-8pt}`);
+  L.push(`\\end{center}`);
+  L.push(``);
+
+  const edus = d.education.filter(e => e.title || e.org);
+  if (edus.length) {
+    L.push(`\\section{Education}`);
+    L.push(`  \\resumeSubHeadingListStart`);
+    edus.forEach(e => {
+      const dates = [e.start, e.end].filter(Boolean).join(" -- ");
+      L.push(`    \\resumeSubheading`);
+      L.push(`      {${pipe(e.org || "University")}}{${pipe(dates)}}`);
+      L.push(`      {${pipe(e.title || "Degree")}{${pipe(e.location)}}`);
+      if (e === edus[0] && d.gpa) L.push(`    \\resumeSubSubheading{GPA: ${pipe(d.gpa)}${d.gradingScale ? ` (${pipe(d.gradingScale)})` : ""}}{}`);
+      if (e === edus[edus.length - 1] && d.thesis) L.push(`    \\resumeSubSubheading{Thesis: ${pipe(d.thesis)}}{}`);
+    });
+    L.push(`  \\resumeSubHeadingListEnd`);
+    L.push(``);
+    if (d.relevantCourses) {
+      const courses = d.relevantCourses.split(/[,;]/).map(c => c.trim()).filter(Boolean);
+      L.push(`\\section{Relevant Coursework}`);
+      L.push(`    \\begin{multicols}{4}`);
+      L.push(`         \\begin{itemize}[itemsep=-5pt, parsep=3pt]`);
+      courses.forEach(c => L.push(`               \\item\\small ${pipe(c)}`));
+      L.push(`        \\end{itemize}`);
+      L.push(`    \\end{multicols}`);
+      L.push(`        \\vspaceo{2.0\\multicolsep}`);
+      L.push(``);
+    }
+  }
+
+  if (d.hasExperience) {
+    const exps = d.experience.filter(e => e.title || e.org);
+    if (exps.length) {
+      L.push(`\\section{Experience}`);
+      L.push(`  \\resumeSubHeadingListStart`);
+      L.push(``);
+      exps.forEach(e => {
+        const dates = [e.start, e.end].filter(Boolean).join(" -- ");
+        L.push(`   \\resumeSubheading`);
+        L.push(`      {${pipe(e.org || "Employer")}}{${pipe(dates)}}`);
+        L.push(`      {${pipe(e.title || "Role")}{${pipe(e.location)}}`);
+        const bl = (e.bullets || []).filter(Boolean);
+        if (bl.length) {
+          L.push(`      \\resumeItemListStart`);
+          bl.forEach(b => L.push(`        \\resumeItem{${pipe(b)}}`));
+          L.push(`      \\resumeItemListEnd`);
+        }
+        L.push(``);
+      });
+      L.push(`  \\resumeSubHeadingListEnd`);
+      L.push(`\\vspace{-16pt}`);
+      L.push(``);
+    }
+  }
+
+  const projs = d.projects.filter(p => p.title || p.org);
+  if (projs.length) {
+    L.push(`\\section{Projects}`);
+    L.push(`    \\vspace{-5pt}`);
+    L.push(`    \\resumeSubHeadingListStart`);
+    projs.forEach(p => {
+      const dates = [p.start, p.end].filter(Boolean).join(" -- ");
+      L.push(`      \\resumeProjectHeading`);
+      L.push(`          {\\textbf{${pipe(p.title || "Project")}} ${p.org ? `$|$ \\emph{${pipe(p.org)}}` : ""}}{${pipe(dates)}}`);
+      const bl = (p.bullets || []).filter(Boolean);
+      if (bl.length) {
+        L.push(`          \\resumeItemListStart`);
+        bl.forEach(b => L.push(`            \\resumeItem{${pipe(b)}}`));
+        L.push(`          \\resumeItemListEnd`);
+      }
+      L.push(`          \\vspace{-13pt}`);
+    });
+    L.push(`    \\resumeSubHeadingListEnd`);
+    L.push(`\\vspace{-15pt}`);
+    L.push(``);
+  }
+
+  const s = d.skills;
+  const skillLines = [
+    s.office && `     \\textbf{Office \\& Reporting}{: ${pipe(s.office)}} \\\\`,
+    s.stats && `     \\textbf{Statistics \\& Methods}{: ${pipe(s.stats)}} \\\\`,
+    s.tools && `     \\textbf{Technologies/Tools}{: ${pipe(s.tools)}} \\\\`,
+    s.languages && `     \\textbf{Languages}{: ${pipe(s.languages)}} \\\\`,
+    d.languageTests && `     \\textbf{Language Tests}{: ${pipe(d.languageTests)}} \\\\`,
+    d.standardizedTests && `     \\textbf{Standardized Tests}{: ${pipe(d.standardizedTests)}} \\\\`,
+  ].filter(Boolean);
+  if (skillLines.length) {
+    L.push(`\\section{Technical Skills}`);
+    L.push(` \\begin{itemize}[leftmargin=0.15in, label={}]`);
+    L.push(`    \\small{\\item{`);
+    skillLines.forEach(l => L.push(l));
+    L.push(`    }}`);
+    L.push(` \\end{itemize}`);
+    L.push(` \\vspace{-16pt}`);
+    L.push(``);
+  }
+
+  const extras = (d.extras || "").split("\n").map(x => x.trim()).filter(Boolean);
+  if (extras.length) {
+    L.push(`\\section{Leadership / Extracurricular}`);
+    L.push(`    \\resumeSubHeadingListStart`);
+    L.push(`        \\resumeItemListStart`);
+    extras.forEach(x => {
+      const m = x.match(/^(.+?):\s*(.+)$/);
+      L.push(m ? `            \\resumeItem{\\textbf{${pipe(m[1])}:} ${pipe(m[2])}}` : `            \\resumeItem{${pipe(x)}}`);
+    });
+    L.push(`        \\resumeItemListEnd`);
+    L.push(`    \\resumeSubHeadingListEnd`);
+    L.push(``);
+  }
+
+  L.push(`\\end{document}`);
+  return L.join("\n");
+}
+
 // ---------- Small components ----------
 function Field({ label, hint, children }) {
   return (
@@ -176,7 +393,7 @@ function Bullets({ bullets, onChange, suggestions }) {
     <div>
       {bullets.map((b, i) => (
         <div key={i} className="flex gap-2 mb-2">
-          <input className={inputCls} value={b} placeholder="Achievement bullet (start with a verb, add numbers)"
+          <input className={inputCls} value={b} placeholder="Describe what you did and the result, with numbers if possible"
             onChange={(e) => { const n = [...bullets]; n[i] = e.target.value; onChange(n); }} />
           <button className="text-slate-400 hover:text-red-500 px-1" onClick={() => onChange(bullets.filter((_, j) => j !== i))}>✕</button>
         </div>
@@ -199,13 +416,13 @@ function App() {
   });
   const [step, setStep] = useState(0);
   const [tab, setTab] = useState("preview");
-  const [copied, setCopied] = useState(false);
+  const [printing, setPrinting] = useState(false);
 
   useEffect(() => { try { localStorage.setItem("latex-cv-builder-data", JSON.stringify(data)); } catch (e) {} }, [data]);
   const set = (k, v) => setData((d) => ({ ...d, [k]: v }));
   const setSkill = (k, v) => setData((d) => ({ ...d, skills: { ...d.skills, [k]: v } }));
 
-  const latex = useMemo(() => buildLatex(data), [data]);
+  const latex = useMemo(() => data.template === "classic" ? buildLatexClassic(data) : buildLatexAcademic(data), [data]);
 
   const completeness = useMemo(() => {
     const checks = [
@@ -219,91 +436,120 @@ function App() {
     return Math.round((checks.filter(Boolean).length / checks.length) * 100);
   }, [data]);
 
-  const download = () => {
-    const blob = new Blob([latex], { type: "text/plain" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = (data.fullName || "cv").replace(/\s+/g, "_").toLowerCase() + "_CV.tex";
-    a.click();
-    URL.revokeObjectURL(a.href);
-  };
-
-  const copy = async () => {
-    try { await navigator.clipboard.writeText(latex); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch (e) {}
+  const printPdf = () => {
+    setTab("preview");
+    setPrinting(true);
+    setTimeout(() => { window.print(); setPrinting(false); }, 150);
   };
 
   // Visual preview (HTML approximation of the LaTeX output)
   const Preview = () => {
+    const classic = data.template === "classic";
     const edus = data.education.filter(e => e.title || e.org);
     const exps = data.hasExperience ? data.experience.filter(e => e.title || e.org) : [];
     const projs = data.projects.filter(p => p.title || p.org);
     const extras = (data.extras || "").split("\n").filter(Boolean);
+    const courses = data.relevantCourses ? data.relevantCourses.split(/[,;]/).map(c => c.trim()).filter(Boolean) : [];
     const Section = ({ t, children }) => children && (
       <div className="mt-3">
-        <div className="font-bold text-[#1F3A5F] text-[15px] border-b border-slate-300 pb-0.5">{t}</div>
+        <div className={classic
+          ? "font-bold text-black text-[14px] uppercase tracking-wide border-b border-black pb-0.5"
+          : "font-bold text-[#1F3A5F] text-[15px] border-b border-slate-300 pb-0.5"}>{t}</div>
         <div className="pt-1">{children}</div>
       </div>
     );
-    const Entry = ({ left, right, sub, bullets }) => (
+    const Entry = ({ left, right, sub, subRight, bullets }) => (
       <div className="mb-1.5">
-        <div className="flex justify-between text-[13px]"><span className="font-bold">{left}</span><span className="text-slate-600">{right}</span></div>
-        {sub && <div className="italic text-[12px] text-slate-700">{sub}</div>}
+        <div className="flex justify-between text-[13px]"><span className="font-bold">{left}</span><span className="font-bold text-slate-700 text-[12px]">{right}</span></div>
+        {(sub || subRight) && <div className="flex justify-between italic text-[12px] text-slate-700"><span>{sub}</span><span>{subRight}</span></div>}
         {bullets && bullets.filter(Boolean).length > 0 && (
           <ul className="list-disc ml-5 text-[12px] text-slate-800">{bullets.filter(Boolean).map((b, i) => <li key={i}>{b}</li>)}</ul>
         )}
       </div>
     );
     return (
-      <div className="bg-white shadow-md rounded-lg p-8 text-slate-900 text-[13px] leading-snug max-w-[210mm] mx-auto" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
-        <div className="text-2xl font-bold">{data.fullName || "Your Name"}</div>
-        {data.headline && <div className="text-slate-700">{data.headline}</div>}
-        <div className="text-[12px] text-slate-700">
-          {[data.city, data.phone, data.email, data.github && `github.com/${data.github}`, data.linkedin && `linkedin.com/in/${data.linkedin}`].filter(Boolean).join(" • ")}
-        </div>
-        {(data.birth || data.nationality) && <div className="text-[12px] text-slate-500">{[data.birth && `Born: ${data.birth}`, data.nationality].filter(Boolean).join(" • ")}</div>}
-        <Section t="Profile"><p>{data.targetProgram ? `Target: ${data.targetProgram} (${data.programLanguage}-taught). ` : ""}Master's applicant with a strong academic record and hands-on data analysis experience.</p></Section>
+      <div id="print-area" className={`bg-white shadow-md rounded-lg p-8 text-slate-900 text-[13px] leading-snug max-w-[210mm] mx-auto ${classic ? "text-black" : ""}`} style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+        {classic ? (
+          <div className="text-center">
+            <div className="text-3xl font-bold" style={{ fontVariant: "small-caps" }}>{data.fullName || "Your Name"}</div>
+            {data.city && <div className="text-[12px]">{data.city}</div>}
+            <div className="text-[12px]">
+              {[data.phone, data.email, data.github && `github.com/${data.github}`, data.linkedin && `linkedin.com/in/${data.linkedin}`].filter(Boolean).join("  •  ")}
+            </div>
+          </div>
+        ) : (
+          <div>
+            <div className="text-2xl font-bold">{data.fullName || "Your Name"}</div>
+            {data.headline && <div className="text-slate-700">{data.headline}</div>}
+            <div className="text-[12px] text-slate-700">
+              {[data.city, data.phone, data.email, data.github && `github.com/${data.github}`, data.linkedin && `linkedin.com/in/${data.linkedin}`].filter(Boolean).join(" • ")}
+            </div>
+            {(data.birth || data.nationality) && <div className="text-[12px] text-slate-500">{[data.birth && `Born: ${data.birth}`, data.nationality].filter(Boolean).join(" • ")}</div>}
+          </div>
+        )}
         <Section t="Education">
           {edus.map((e, i) => (
-            <Entry key={i} left={e.title || "Degree"} right={[e.start, e.end].filter(Boolean).join(" – ")}
-              sub={[e.location, i === 0 && data.gpa ? `GPA: ${data.gpa}${data.gradingScale ? ` (${data.gradingScale})` : ""}` : ""].filter(Boolean).join(", ")}
-              bullets={[i === edus.length - 1 && data.thesis ? `Thesis: ${data.thesis}` : "", i === 0 && data.relevantCourses ? `Relevant coursework: ${data.relevantCourses}` : "", ...(e.bullets || [])]} />
+            <React.Fragment key={i}>
+              <Entry left={e.org || e.title || "University"} right={[e.start, e.end].filter(Boolean).join(" – ")}
+                sub={e.title || "Degree"} subRight={e.location} />
+              {i === 0 && data.gpa && <div className="italic text-[12px] text-slate-700 ml-2">GPA: {data.gpa}{data.gradingScale ? ` (${data.gradingScale})` : ""}</div>}
+              {i === edus.length - 1 && data.thesis && <div className="italic text-[12px] text-slate-700 ml-2">Thesis: {data.thesis}</div>}
+            </React.Fragment>
           ))}
+          {courses.length > 0 && (
+            <div className="mt-2">
+              <div className="text-[12px] font-semibold">Relevant Coursework</div>
+              <div className="grid grid-cols-4 gap-x-2 text-[11px] text-slate-800">{courses.map((c, i) => <div key={i}>• {c}</div>)}</div>
+            </div>
+          )}
         </Section>
-        {exps.length > 0 && <Section t="Professional Experience">
+        {exps.length > 0 && <Section t="Experience">
           {eyps.map((e, i) => (
-            <Entry key={i} left={`${e.org || "Employer"} – ${e.title || "Role"}`} right={[e.start, e.end].filter(Boolean).join(" – ")} sub={e.location} bullets={e.bullets || []} />
+            <Entry key={i} left={e.org || "Employer"} right={[e.start, e.end].filter(Boolean).join(" – ")} sub={e.title || "Role"} subRight={e.location} bullets={e.bullets || []} />
           ))}
         </Section>}
         {projs.length > 0 && <Section t="Projects">
           {projs.map((p, i) => (
             <div key={i} className="mb-1.5">
-              <span className="font-bold">{p.title}</span>{p.org && <span> ({p.org})</span>}
-              {(p.bullets || []).filter(Boolean).map((b, j) => <div key={j} className="text-[12px]">{b}</div>)}
+              <div className="flex justify-between text-[13px]">
+                <span><span className="font-bold">{p.title}</span>{p.org && <span> | <em>{p.org}</em></span>}</span>
+                <span className="font-bold text-[12px] text-slate-700">{[p.start, p.end].filter(Boolean).join(" – ")}</span>
+              </div>
+              {(p.bullets || []).filter(Boolean).map((b, j) => <div key={j} className="text-[12px] ml-3">• {b}</div>)}
             </div>
           ))}
         </Section>}
-        {extras.length > 0 && <Section t="Leadership, Awards & Activities">
+        <Section t="Technical Skills">
+          <div className="text-[12px]">
+            {data.skills.office && <div><b>Office & Reporting:</b> {data.skills.office}</div>}
+            {data.skills.stats && <div><b>Statistics & Methods:</b> {data.skills.stats}</div>}
+            {data.skills.tools && <div><b>Technologies/Tools:</b> {data.skills.tools}</div>}
+            {data.skills.languages && <div><b>Languages:</b> {data.skills.languages}</div>}
+            {data.languageTests && <div><b>Language Tests:</b> {data.languageTests}</div>}
+            {data.standardizedTests && <div><b>Standardized Tests:</b> {data.standardizedTests}</div>}
+          </div>
+        </Section>}
+        {extras.length > 0 && <Section t="Leadership / Extracurricular">
           <ul className="list-disc ml-5 text-[12px]">{extras.map((x, i) => {
             const m = x.match(/^(.+?):\s*(.+)$/);
             return <li key={i}>{m ? <React.Fragment><b>{m[1]}:</b> {m[2]}</React.Fragment> : x}</li>;
           })}</ul>
         </Section>}
-        <Section t="Skills & Languages">
-          {[data.skills.office && <div key="o"><b>Office & reporting:</b> {data.skills.office}</div>,
-            data.skills.stats && <div key="s"><b>Statistics:</b> {data.skills.stats}</div>,
-            data.skills.tools && <div key="t"><b>Data & tools:</b> {data.skills.tools}</div>,
-            data.skills.languages && <div key="l"><b>Languages:</b> {data.skills.languages}</div>,
-            data.languageTests && <div key="lt"><b>Language tests:</b> {data.languageTests}</div>,
-            data.standardizedTests && <div key="st"><b>Standardized tests:</b> {data.standardizedTests}</div>
-          ].filter(Boolean)}
-        </Section>
       </div>
     );
   };
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900">
-      <div className="bg-[#1F3A5F] text-white px-6 py-3 flex items-center justify-between sticky top-0 z-10">
+      <style>{`
+        @media print {
+          body * { visibility: hidden; }
+          #print-area, #print-area * { visibility: visible; }
+          #print-area { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; border-radius: 0; max-width: none; }
+          @page { margin: 12mm; }
+        }
+      `}</style>
+      <div className="bg-[#1F3A5F] text-white px-6 py-3 flex items-center justify-between sticky top-0 z-10 print:hidden">
         <div>
           <div className="font-bold tracking-tight">LaTeX CV Builder</div>
           <div className="text-[11px] text-blue-200">Master's application CV · inspired by Kickresume, Enhancv & Zety</div>
@@ -315,7 +561,11 @@ function App() {
             </div>
             <span className="text-xs text-blue-100">{completeness}% complete</span>
           </div>
-          <button onClick={download} className="rounded-lg bg-emerald-500 hover:bg-emerald-600 px-3 py-1.5 text-sm font-semibold">Download .tex</button>
+          <select value={data.template} onChange={e => set("template", e.target.value)}
+            className="rounded-lg bg-white text-slate-800 px-3 py-1.5 text-sm font-medium">
+            <option value="academic">Template: Academic (navy)</option>
+            <option value="classic">Template: Classic (Jake Gutierrez)</option>
+          </select>
         </div>
       </div>
 
@@ -333,10 +583,10 @@ function App() {
           {step === 0 && (
             <div>
               <h2 className="font-bold text-lg mb-3">Personal details</h2>
-              <Field label="Full name"><input className={inputCls} value={data.fullName} onChange={e => set("fullName", e.target.value)} placeholder="Akhadjon Abubakirov" /></Field>
+              <Field label="Full name"><input className={inputCls} value={data.fullName} onChange={e => set("fullName", e.target.value)} placeholder="Jane Doe" /></Field>
               <Field label="Headline" hint="e.g. Economics Master's Student | Data Analysis & Finance"><input className={inputCls} value={data.headline} onChange={e => set("headline", e.target.value)} /></Field>
               <div className="grid grid-cols-2 gap-3">
-                <Field label="City"><input className={inputCls} value={data.city} onChange={e => set("city", e.target.value)} placeholder="Bonn, Germany" /></Field>
+                <Field label="City"><input className={inputCls} value={data.city} onChange={e => set("city", e.target.value)} placeholder="City, Country" /></Field>
                 <Field label="Phone"><input className={inputCls} value={data.phone} onChange={e => set("phone", e.target.value)} /></Field>
                 <Field label="Email"><input className={inputCls} value={data.email} onChange={e => set("email", e.target.value)} /></Field>
                 <Field label="GitHub username" hint="github.com/..."><input className={inputCls} value={data.github} onChange={e => set("github", e.target.value)} /></Field>
@@ -355,11 +605,11 @@ function App() {
               {data.education.map((e, i) => (
                 <EntryCard key={i} title={`Education ${i + 1}`} removable={data.education.length > 1}
                   onRemove={() => set("education", data.education.filter((_, j) => j !== i))}>
-                  <Field label="Degree"><input className={inputCls} value={e.title} onChange={ev => { const n = [...data.education]; n[i].title = ev.target.value; set("education", n); }} placeholder="M.Sc. Economics" /></Field>
+                  <Field label="Degree"><input className={inputCls} value={e.title} onChange={ev => { const n = [...data.education]; n[i].title = ev.target.value; set("education", n); }} placeholder="B.Sc. Economics" /></Field>
                   <div className="grid grid-cols-2 gap-3">
-                    <Field label="University"><input className={inputCls} value={e.org} onChange={ev => { const n = [...data.education]; n[i].org = ev.target.value; set("education", n); }} placeholder="University of Bonn" /></Field>
+                    <Field label="University"><input className={inputCls} value={e.org} onChange={ev => { const n = [...data.education]; n[i].org = ev.target.value; set("education", n); }} placeholder="University name" /></Field>
                     <Field label="City, country"><input className={inputCls} value={e.location} onChange={ev => { const n = [...data.education]; n[i].location = ev.target.value; set("education", n); }} /></Field>
-                    <Field label="Start"><input className={inputCls} value={e.start} onChange={ev => { const n = [...data.education]; n[i].start = ev.target.value; set("education", n); }} placeholder="Oct 2025" /></Field>
+                    <Field label="Start"><input className={inputCls} value={e.start} onChange={ev => { const n = [...data.education]; n[i].start = ev.target.value; set("education", n); }} placeholder="Sep 2021" /></Field>
                     <Field label="End (or 'present')"><input className={inputCls} value={e.end} onChange={ev => { const n = [...data.education]; n[i].end = ev.target.value; set("education", n); }} /></Field>
                   </div>
                 </EntryCard>
@@ -368,7 +618,7 @@ function App() {
               <Field label="Final grade / GPA + grading scale" hint="e.g. 1.7 (German scale) or 3.8/4.0"><input className={inputCls} value={data.gpa} onChange={e => set("gpa", e.target.value)} /></Field>
               <Field label="Grading scale (optional)"><input className={inputCls} value={data.gradingScale} onChange={e => set("gradingScale", e.target.value)} placeholder="German scale, 1.0 best" /></Field>
               <Field label="Thesis title & topic"><textarea rows={2} className={inputCls} value={data.thesis} onChange={e => set("thesis", e.target.value)} /></Field>
-              <Field label="Most relevant courses"><textarea rows={2} className={inputCls} value={data.relevantCourses} onChange={e => set("relevantCourses", e.target.value)} placeholder="Econometrics, Financial Economics, Machine Learning for Finance" /></Field>
+              <Field label="Most relevant courses" hint="Separate with commas"><textarea rows={2} className={inputCls} value={data.relevantCourses} onChange={e => set("relevantCourses", e.target.value)} placeholder="Econometrics, Statistics, Machine Learning" /></Field>
             </div>
           )}
 
@@ -393,15 +643,14 @@ function App() {
                       <div className="grid grid-cols-2 gap-3">
                         <Field label="Employer"><input className={inputCls} value={e.org} onChange={ev => { const n = [...data.experience]; n[i].org = ev.target.value; set("experience", n); }} /></Field>
                         <Field label="Role"><input className={inputCls} value={e.title} onChange={ev => { const n = [...data.experience]; n[i].title = ev.target.value; set("experience", n); }} /></Field>
-                        <Field label="Location"><input className={inputCls} value={e.location} onChange={ev => { const n = [...data.experience]; n[i].location = ev.target.value; set("experience", n); }} placeholder="Remote" /></Field>
+                        <Field label="Location"><input className={inputCls} value={e.location} onChange={ev => { const n = [...data.experience]; n[i].location = ev.target.value; set("experience", n); }} placeholder="City, Country" /></Field>
                         <div className="grid grid-cols-2 gap-2">
                           <Field label="Start"><input className={inputCls} value={e.start} onChange={ev => { const n = [...data.experience]; n[i].start = ev.target.value; set("experience", n); }} /></Field>
                           <Field label="End"><input className={inputCls} value={e.end} onChange={ev => { const n = [...data.experience]; n[i].end = ev.target.value; set("experience", n); }} /></Field>
                         </div>
                       </div>
                       <Field label="What did you do? Results with numbers if possible">
-                        <Bullets bullets={e.bullets} onChange={b => { const n = [...data.experience]; n[i].bullets = b; set("experience", n); }}
-                          suggestions={["Managed ~100 requests/day across operations and support", "Prepared daily and monthly reports for management review", "Used Python to clean and analyse operational data"]} />
+                        <Bullets bullets={e.bullets} onChange={b => { const n = [...data.experience]; n[i].bullets = b; set("experience", n); }} />
                       </Field>
                     </EntryCard>
                   ))}
@@ -419,7 +668,7 @@ function App() {
                   onRemove={() => set("projects", data.projects.filter((_, j) => j !== i))}>
                   <div className="grid grid-cols-2 gap-3">
                     <Field label="Project name"><input className={inputCls} value={p.title} onChange={ev => { const n = [...data.projects]; n[i].title = ev.target.value; set("projects", n); }} /></Field>
-                    <Field label="Tools used"><input className={inputCls} value={p.org} onChange={ev => { const n = [...data.projects]; n[i].org = ev.target.value; set("projects", n); }} placeholder="Python, Pandas, Django" /></Field>
+                    <Field label="Tools used"><input className={inputCls} value={p.org} onChange={ev => { const n = [...data.projects]; n[i].org = ev.target.value; set("projects", n); }} placeholder="Python, Pandas" /></Field>
                     <Field label="Start"><input className={inputCls} value={p.start} onChange={ev => { const n = [...data.projects]; n[i].start = ev.target.value; set("projects", n); }} /></Field>
                     <Field label="End"><input className={inputCls} value={p.end} onChange={ev => { const n = [...data.projects]; n[i].end = ev.target.value; set("projects", n); }} /></Field>
                   </div>
@@ -433,11 +682,11 @@ function App() {
           {step === 4 && (
             <div>
               <h2 className="font-bold text-lg mb-3">Skills & languages</h2>
-              <Field label="Office & reporting"><input className={inputCls} value={data.skills.office} onChange={e => setSkill("office", e.target.value)} placeholder="Excel (Pivot Tables, VLOOKUP), operational reporting" /></Field>
+              <Field label="Office & reporting"><input className={inputCls} value={data.skills.office} onChange={e => setSkill("office", e.target.value)} placeholder="Excel (Pivot Tables, VLOOKUP), reporting" /></Field>
               <Field label="Statistics & methods"><input className={inputCls} value={data.skills.stats} onChange={e => setSkill("stats", e.target.value)} placeholder="Econometrics, regression, hypothesis testing" /></Field>
-              <Field label="Data & tools"><input className={inputCls} value={data.skills.tools} onChange={e => setSkill("tools", e.target.value)} placeholder="Python (Pandas, NumPy), SQL, Git, Django" /></Field>
-              <Field label="Languages with levels (A1–C2)"><input className={inputCls} value={data.skills.languages} onChange={e => setSkill("languages", e.target.value)} placeholder="Uzbek (native), English (C1), German (A2)" /></Field>
-              <Field label="Language tests taken (score + date)"><input className={inputCls} value={data.languageTests} onChange={e => set("languageTests", e.target.value)} placeholder="IELTS 7.5 (2025), TestDaF 4,4,4,4" /></Field>
+              <Field label="Data & tools"><input className={inputCls} value={data.skills.tools} onChange={e => setSkill("tools", e.target.value)} placeholder="Python (Pandas, NumPy), SQL, Git" /></Field>
+              <Field label="Languages with levels (A1–C2)"><input className={inputCls} value={data.skills.languages} onChange={e => setSkill("languages", e.target.value)} placeholder="English (C1), German (A2)" /></Field>
+              <Field label="Language tests taken (score + date)"><input className={inputCls} value={data.languageTests} onChange={e => set("languageTests", e.target.value)} placeholder="IELTS 7.0 (2025) or leave empty" /></Field>
               <Field label="GRE / GMAT / TestAS (if taken)"><input className={inputCls} value={data.standardizedTests} onChange={e => set("standardizedTests", e.target.value)} placeholder="GRE 320 (2025) or leave empty" /></Field>
             </div>
           )}
@@ -446,10 +695,10 @@ function App() {
             <div>
               <h2 className="font-bold text-lg mb-3">Extras & target program</h2>
               <Field label="Scholarships, awards, volunteering, extracurriculars" hint="One per line. Format 'Name: what you did' for bold names.">
-                <textarea rows={4} className={inputCls} value={data.extras} onChange={e => set("extras", e.target.value)} placeholder={"FinLit.uz (volunteer): organised educational events\nZakovat competition: 3rd place in team of five"} />
+                <textarea rows={4} className={inputCls} value={data.extras} onChange={e => set("extras", e.target.value)} placeholder={"Volunteer club: organised educational events\nCase competition: 3rd place in team of five"} />
               </Field>
-              <Field label="Timeline gaps: short explanation (optional)"><textarea rows={2} className={inputCls} value={data.gapExplanation} onChange={e => set("gapExplanation", e.target.value)} placeholder="e.g. 2023: intensive German language study (B1→C1)" /></Field>
-              <Field label="Target program & university"><input className={inputCls} value={data.targetProgram} onChange={e => set("targetProgram", e.target.value)} placeholder="M.Sc. Economics, University of Bonn" /></Field>
+              <Field label="Timeline gaps: short explanation (optional)"><textarea rows={2} className={inputCls} value={data.gapExplanation} onChange={e => set("gapExplanation", e.target.value)} placeholder="e.g. 2023: intensive language study" /></Field>
+              <Field label="Target program & university"><input className={inputCls} value={data.targetProgram} onChange={e => set("targetProgram", e.target.value)} placeholder="M.Sc. Program, University name" /></Field>
               <Field label="Program language">
                 <select className={inputCls} value={data.programLanguage} onChange={e => set("programLanguage", e.target.value)}>
                   <option>English</option><option>German</option><option>English & German</option>
@@ -472,7 +721,7 @@ function App() {
         </div>
 
         <div className="lg:w-[54%] bg-slate-200/70 p-6 border-t lg:border-t-0 lg:border-l border-slate-300">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-3 print:hidden">
             <div className="flex gap-1 rounded-lg bg-white p-1 shadow-sm">
               {["preview", "latex"].map(t => (
                 <button key={t} onClick={() => setTab(t)}
@@ -481,27 +730,26 @@ function App() {
                 </button>
               ))}
             </div>
-            <div className="flex gap-2">
-              <button onClick={copy} className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium hover:bg-slate-50">{copied ? "✓ Copied" : "Copy LaTeX"}</button>
-              <button onClick={download} className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium hover:bg-slate-50">Download .tex</button>
-              <a href="https://www.overleaf.com" target="_blank" rel="noreferrer" className="rounded-lg bg-emerald-600 text-white px-3 py-1.5 text-xs font-semibold hover:bg-emerald-700">Compile on Overleaf ↗</a>
-            </div>
           </div>
           {tab === "preview" ? (
-            <div className="overflow-auto max-h-[80vh]"><Preview /></div>
+            <div className="overflow-auto max-h-[80vh] print:max-h-none print:overflow-visible"><Preview /></div>
           ) : (
-            <pre className="rounded-xl bg-slate-900 text-emerald-200 text-[11px] leading-relaxed p-4 overflow-auto max-h-[80vh] whitespace-pre-wrap">{latex}</pre>
+            <pre className="rounded-xl bg-slate-900 text-emerald-200 text-[11px] leading-relaxed p-4 overflow-auto max-h-[80vh] whitespace-pre-wrap print:hidden">{latex}</pre>
           )}
-          <p className="text-[11px] text-slate-500 mt-3">
-            Download the .tex file and upload it to Overleaf to get your PDF. Everything is saved in your browser automatically.
-          </p>
+          <div className="mt-4 print:hidden">
+            <button onClick={printPdf} disabled={printing}
+              className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 text-sm font-bold shadow-md disabled:opacity-60">
+              🖨 {printing ? "Opening print dialog..." : "Print / Save as PDF"}
+            </button>
+            <p className="text-[11px] text-slate-500 mt-2">
+              In the print dialog choose "Save as PDF" to download your CV. For the compiled LaTeX PDF, copy the code from the LaTeX tab into Overleaf.
+            </p>
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 </script>
 </body>
 </html>
